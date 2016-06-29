@@ -12,7 +12,7 @@ public class Dijkstra {
                                {0, 0, 12, 0, 0, 0, 5, 6, 0}
                               };
                               */
-    int graph[][] = {{0, 4, 0, 0, 0, 0, 0, 8, 0},
+    int graph[][] =       {{0, 4, 0, 0, 0, 0, 0, 8, 0},
                            {4, 0, 8, 0, 0, 0, 0, 11, 0},
                            {0, 8, 0, 7, 0, 4, 0, 0, 2},
                            {0, 0, 7, 0, 9, 14, 0, 0, 0},
@@ -20,30 +20,36 @@ public class Dijkstra {
                            {0, 0, 4, 0, 10, 0, 2, 0, 0},
                            {0, 0, 0, 14, 0, 2, 0, 1, 6},
                            {8, 11, 0, 0, 0, 0, 1, 0, 7},
-                           {0, 0, 2, 0, 0, 0, 6, 7, 0}
-                          };
+                           {0, 0, 2, 0, 0, 0, 6, 7, 0}};
     V = graph.length;
     dijkstra (graph, 0, 4);
   }
+
   public static void dijkstra (int[][] graph, int start, int dest) {
     boolean[] visited = new boolean[V];
-    int[] dist = new int[V];
-    int[] prev = new int[V];
+    int[] dist = new int[V]; //stores best distance from start to all other nodes.
+    int[] prev = new int[V]; //For figuring out the path from start to dest
     for (int i = 0; i < dist.length; i++) {
       visited[i] = false;
-      dist[i] = Integer.MAX_VALUE;
+      dist[i] = Integer.MAX_VALUE; //"infinity" value because they are unknown
     }
-    dist[start] = 0;
+    dist[start] = 0; //distance from start to itself is zero
 
     for (int fromV = 0; fromV < V - 1; fromV++) {
-      int current = minimumDistance(visited, dist);
-      visited[current] = true;
+      int current = minimumDistance(visited, dist); //find the next vertex to work on. starts with start vertex because we set it to zero.
+      visited[current] = true; //mark the current node as visited so we don't keep doing it
 
       for (int toV = 0; toV < V; toV++) {
+        /* 1. check if the toV (vertex) is not visited
+           2. if there is an edge from current to toV (0 in the graph indicates no edge)
+           3. dist[current] is obviously not MAX_VALUE for the one to do, but we want to make this check so that 4) does not overflow
+           4. if the distance to the current vertex plus the weight to the next vertex is better than the existing value to the next vertex
+                then update that distance.
+        */
         if (visited[toV] == false && graph[current][toV] != 0 && dist[current] != Integer.MAX_VALUE
                                   && dist[current] + graph[current][toV] < dist[toV]) {
             dist[toV] = dist[current] + graph[current][toV];
-            prev[toV] = current;
+            prev[toV] = current; //this helps us "remember" the pathway to that vertex
           }
       }
     }
@@ -85,7 +91,7 @@ public class Dijkstra {
         break;
       }
     int i = n;
-    while (i != src) {
+    while (i != src) { //when i == src, then we're done finding our way back
       path.append(i + "-");
       i = prev[i];
     }
