@@ -22,7 +22,7 @@ public class Dijkstra {
                            {8, 11, 0, 0, 0, 0, 1, 0, 7},
                            {0, 0, 2, 0, 0, 0, 6, 7, 0}};
     V = graph.length;
-    dijkstra (graph, 0, 4);
+    dijkstra (graph, 2, 4);
   }
 
   public static void dijkstra (int[][] graph, int start, int dest) {
@@ -34,7 +34,7 @@ public class Dijkstra {
       dist[i] = Integer.MAX_VALUE; //"infinity" value because they are unknown
     }
     dist[start] = 0; //distance from start to itself is zero
-
+    prev[start] = -1;
     for (int fromV = 0; fromV < V - 1; fromV++) {
       int current = minimumDistance(visited, dist); //find the next vertex to work on. starts with start vertex because we set it to zero.
       visited[current] = true; //mark the current node as visited so we don't keep doing it
@@ -52,6 +52,9 @@ public class Dijkstra {
             prev[toV] = current; //this helps us "remember" the pathway to that vertex
           }
       }
+    }
+    for (int i : prev){
+      System.out.println(i);
     }
     printSolution (dist, dest);
     printAllSolutions (dist, V);
@@ -82,14 +85,15 @@ public class Dijkstra {
   }
 
   private static void printPath (int prev[], int n) {
-    System.out.println("Path from source vertex to " + n);
+
     int src = 0; //stupid compiler
     StringBuilder path = new StringBuilder();
-    for( int i : prev)
-      if (prev[i] == 0){
+    for (int i = 0; i < prev.length; i++)
+      if (prev[i] == -1){
         src = i;
         break;
       }
+    System.out.println("Path from " + src + " to " + n);
     int i = n;
     while (i != src) { //when i == src, then we're done finding our way back
       path.append(i + "-");
